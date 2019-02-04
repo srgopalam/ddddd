@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: periodservice
+Implementation-Version: 0.0.1
+Built-By: kafka
+Implementation-Vendor-Id: com.amway
+Build-Jdk: 1.8.0_191
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/periodservice
+Created-By: Maven Integration for Eclipse
+
