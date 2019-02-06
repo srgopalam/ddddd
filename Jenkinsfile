@@ -3,7 +3,12 @@ node{
     git 'https://github.com/srgopalam/periodservice'
   }
   
-  stage('Compile-Package'){
+  stage('Compile & Test'){
+    def mavenHome = tool name: 'maven360', type: 'maven'
+    sh "${mavenHome}/bin/mvn test"
+  }
+  
+  stage('Packaging the app'){
     def mavenHome = tool name: 'maven360', type: 'maven'
     sh "${mavenHome}/bin/mvn package"
   }
