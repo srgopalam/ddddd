@@ -13,15 +13,15 @@ pipeline {
         }
 
         stage('Compile & Test') {
+            def mavenHome = tool name: 'maven360', type: 'maven'
             steps {
-                def mavenHome = tool name: 'maven360', type: 'maven'
                 sh "${mavenHome}/bin/mvn test"
             }
         }
 
         stage('Packaging the app') {
+            def mavenHome = tool name: 'maven360', type: 'maven'
             steps {
-                def mavenHome = tool name: 'maven360', type: 'maven'
                 sh "${mavenHome}/bin/mvn package"
             }
         }
