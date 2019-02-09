@@ -1,7 +1,7 @@
 pipeline {
   environment {
     registry = "srgopalam/periodservice"
-    registryCredential = ‘dockerhub’
+    registryCredential = 'dockerhub'
   }
   agent any
   stages {
