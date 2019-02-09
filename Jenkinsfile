@@ -13,17 +13,24 @@ pipeline {
         }
 
         stage('Compile & Test') {
-            def mavenHome = tool name: 'maven360', type: 'maven'
+
             steps {
-                sh "${mavenHome}/bin/mvn test"
+                script {
+                    def mavenHome = tool name: 'maven360', type: 'maven'
+                    sh "${mavenHome}/bin/mvn test"
+                }
             }
         }
 
         stage('Packaging the app') {
-            def mavenHome = tool name: 'maven360', type: 'maven'
+
             steps {
-                sh "${mavenHome}/bin/mvn package"
+                script {
+                    def mavenHome = tool name: 'maven360', type: 'maven'
+                    sh "${mavenHome}/bin/mvn package"
+                }
             }
+        
         }
 
         stage('Jacoco Coverage') {
@@ -42,7 +49,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy Image') {
+        stage('Deploy image') {
             steps {
                 script {
                     docker.withRegistry('', registryCredential) {
