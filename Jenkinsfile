@@ -4,8 +4,8 @@ pipeline {
     registryCredential = 'dockerhub'
   }
   agent any
-  stages {steps{
-      stage('SCM Checkout'){
+  stages {
+      stage('SCM Checkout'){steps{
         git 'https://github.com/srgopalam/periodservice'}
   }
   
