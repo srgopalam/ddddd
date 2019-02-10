@@ -32,9 +32,9 @@ public class UtilityController {
 			containerId = new JSONObject(map);
 		} catch (UnknownHostException e) {
 			logger.warn("An exception occurred while trying to determine the host and IP address: {}", e);
-			return new ResponseEntity<Object>(new CustomErrorType("Container Id not found."), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new CustomErrorType("Container Id not found."), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Object>(containerId, HttpStatus.OK);
+		return new ResponseEntity<>(containerId, HttpStatus.OK);
 
 	}
 
