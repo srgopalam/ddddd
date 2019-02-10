@@ -2,6 +2,7 @@ package com.amway.periodservice;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -19,21 +20,21 @@ public class UtilityController {
 	public static final Logger logger = LoggerFactory.getLogger(UtilityController.class);
 
 	// -----------------------Container Id -------------------------------------
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/containerid/", method = RequestMethod.GET)
-	public ResponseEntity<?> containerId() {
+	public ResponseEntity<Object> containerId() {
 		final InetAddress localHost;
-		JSONObject containerId = new JSONObject();
-
+		HashMap<String, String> map = new HashMap<>();
+		JSONObject containerId;
 		try {
 			localHost = InetAddress.getLocalHost();
-			containerId.put("host", localHost.getHostName());
-			containerId.put("ip", localHost.getHostAddress());
+			map.put("host", localHost.getHostName());
+			map.put("ip", localHost.getHostAddress());
+			containerId = new JSONObject(map);
 		} catch (UnknownHostException e) {
 			logger.warn("An exception occurred while trying to determine the host and IP address: {}", e);
 			return new ResponseEntity<Object>(new CustomErrorType("Container Id not found."), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<JSONObject>(containerId, HttpStatus.OK);
+		return new ResponseEntity<Object>(containerId, HttpStatus.OK);
 
 	}
 
