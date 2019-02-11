@@ -1,6 +1,7 @@
 pipeline {
     environment {
-        registry = "srgopalam/periodservice"
+        IMAGE = "srgopalam/periodservice"
+        REGISTRY = "https://registry.hub.docker.com"
         registryCredential = 'dockerhub'
     }
 
@@ -21,21 +22,21 @@ pipeline {
                 }
             }
         }
-   stage('Sonarqube') {
-    environment {
-        scannerHome = tool 'SonarQubeScanner'
-    }
+        stage('Sonarqube') {
+            environment {
+                scannerHome = tool 'SonarQubeScanner'
+            }
 
-    steps {
-        withSonarQubeEnv('sonarqube') {
-            sh "${scannerHome}/bin/sonar-scanner"
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+
+                //timeout(time: 10, unit: 'MINUTES') {
+                //     waitForQualityGate abortPipeline: true
+                //}
+            }
         }
-
-        //timeout(time: 10, unit: 'MINUTES') {
-       //     waitForQualityGate abortPipeline: true
-        //}
-    }
-}
         stage('Packaging the app') {
 
             steps {
@@ -44,7 +45,7 @@ pipeline {
                     sh "${mavenHome}/bin/mvn package"
                 }
             }
-        
+
         }
 
         stage('Jacoco Coverage') {
@@ -81,21 +82,21 @@ pipeline {
             steps {
                 script {
                     // https://hub.docker.com/r/tutum/hello-world/
-                    def container = image.run('-p 80')
-                    def contport = container.port(80)
+                    def container = image.run('-p 8081')
+                    def contport = container.port(8081)
                     println image.id + " container is running at host port, " + contport
                     def resp = sh(returnStdout: true,
-                                        script: """
+                            script: """
                                                 set +x
                                                 curl -w "%{http_code}" -o /dev/null -s \
                                                 http://\"${contport}\"
                                                 """
-                                        ).trim()
-                    if ( resp == "200" ) {
+                    ).trim()
+                    if (resp == "200") {
                         println "periodservice is alive and kicking!"
                         docker.withRegistry("${env.REGISTRY}", 'docker-hub-entree') {
                             image.push("${GIT_HASH}")
-                            if ( "${env.BRANCH_NAME}" == "master" ) {
+                            if ("${env.BRANCH_NAME}" == "master") {
                                 image.push("LATEST")
                             }
                         }
@@ -105,16 +106,17 @@ pipeline {
                         currentBuild.result = "FAILURE"
                     }
                 }
-            }}
+            }
+        }
     }
 }
 
 // No need to occupy a node
-stage("Quality Gate"){
-  timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
-    def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-    if (qg.status != 'OK') {
-      error "Pipeline aborted due to quality gate failure: ${qg.status}"
+stage("Quality Gate") {
+    timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
+        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+        if (qg.status != 'OK') {
+            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        }
     }
-  }
 }
