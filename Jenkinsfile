@@ -77,33 +77,52 @@ pipeline {
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
         }
-        stage('test image') {
-            steps {
-                script {
-                    def container = dockerImage.run('-p 80')
-                    def contport = container.port(80)
-                    println dockerImage.id + " container is running at host port, " + contport
-                    def resp = sh(returnStdout: true,
-                            script: """
-                                                set +x
-                                                curl -w "%{http_code}" -o /dev/null -s \
-                                                http://\"${contport}\"
-                                                """
-                    ).trim()
-                    if (resp == "200") {
-                        println "periodservice is alive and kicking!"
-                        docker.withRegistry("${env.REGISTRY}", 'docker-hub-entree') {
-                            dockerImage.push("${GIT_HASH}")
-                            if ("${env.BRANCH_NAME}" == "master") {
-                                dockerImage.push("LATEST")
-                            }
-                        }
-                        currentBuild.result = "SUCCESS"
-                    } else {
-                        println "periodservice deployment failed!"
-                        currentBuild.result = "FAILURE"
-                    }
-                }
+        /*  stage('test image') {
+              steps {
+                  script {
+                      def container = dockerImage.run('-p 80')
+                      def contport = container.port(80)
+                      println dockerImage.id + " container is running at host port, " + contport
+                      def resp = sh(returnStdout: true,
+                              script: """
+                                                  set +x
+                                                  curl -w "%{http_code}" -o /dev/null -s \
+                                                  http://\"${contport}\"
+                                                  """
+                      ).trim()
+                      if (resp == "200") {
+                          println "periodservice is alive and kicking!"
+                          docker.withRegistry("${env.REGISTRY}", 'docker-hub-entree') {
+                              dockerImage.push("${GIT_HASH}")
+                              if ("${env.BRANCH_NAME}" == "master") {
+                                  dockerImage.push("LATEST")
+                              }
+                          }
+                          currentBuild.result = "SUCCESS"
+                      } else {
+                          println "periodservice deployment failed!"
+                          currentBuild.result = "FAILURE"
+                      }
+                  }
+              }
+          }  */ stage('Run Application') {
+            try {
+                // Start database container here
+                // sh 'docker run -d --name db -p 8091-8093:8091-8093 -p 11210:11210 arungupta/oreilly-couchbase:latest'
+
+                // Run application using Docker image
+                sh "DB=`docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' db`"
+                sh "docker run -e DB_URI=$DB -p 8082:8082 srgopalam/periodservice:$BUILD_NUMBER"
+
+                // Run tests using Maven
+                //dir ('webapp') {
+                //  sh 'mvn exec:java -DskipTests'
+                //}
+            } catch (error) {
+            } finally {
+                // Stop and remove database container here
+                //sh 'docker-compose stop db'
+                //sh 'docker-compose rm db'
             }
         }
     }
