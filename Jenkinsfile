@@ -63,7 +63,7 @@ pipeline {
                 }
             }
         }
-   /*     stage('Deploy image') {
+        stage('Deploy image') {
             steps {
                 script {
                     docker.withRegistry('', registryCredential) {
@@ -76,12 +76,12 @@ pipeline {
             steps {
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
-        }*/
+        }
         stage('test image') {
             steps {
                 script {
-                    def container = dockerImage.run('-p 8081')
-                    def contport = container.port(8081)
+                    def container = dockerImage.run('-p 80')
+                    def contport = container.port(80)
                     println dockerImage.id + " container is running at host port, " + contport
                     def resp = sh(returnStdout: true,
                             script: """
