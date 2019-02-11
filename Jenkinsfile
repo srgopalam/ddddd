@@ -105,7 +105,7 @@ pipeline {
                         currentBuild.result = "FAILURE"
                     }
                 }
-}
+            }}
     }
 }
 
