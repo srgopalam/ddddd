@@ -75,8 +75,8 @@ pipeline {
         stage('test image') {
             steps {
                 script {
-                    def container = dockerImage.run('-p 80')
-                    def contport = container.port(80)
+                    def container = dockerImage.run('-p 8081')
+                    def contport = container.port(8080)
                     println dockerImage.id + " container is running at host port, " + contport
                     def resp = sh(returnStdout: true,
                             script: """
