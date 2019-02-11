@@ -1,5 +1,6 @@
 pipeline {
     environment {
+        IMAGE = "srgopalam/periodservice"
         registry = "srgopalam/periodservice"
         registryCredential = 'dockerhub'
     }
