@@ -1,6 +1,5 @@
 pipeline {
     environment {
-        IMAGE = "srgopalam/periodservice"
         registry = "srgopalam/periodservice"
         registryCredential = 'dockerhub'
     }
@@ -81,9 +80,9 @@ pipeline {
         stage('test image') {
             steps {
                 script {
-                    def container = image.run('-p 8081')
+                    def container = dockerImage.run('-p 8081')
                     def contport = container.port(8081)
-                    println image.id + " container is running at host port, " + contport
+                    println dockerImage.id + " container is running at host port, " + contport
                     def resp = sh(returnStdout: true,
                             script: """
                                                 set +x
@@ -94,9 +93,9 @@ pipeline {
                     if (resp == "200") {
                         println "periodservice is alive and kicking!"
                         docker.withRegistry("${env.REGISTRY}", 'docker-hub-entree') {
-                            image.push("${GIT_HASH}")
+                            dockerImage.push("${GIT_HASH}")
                             if ("${env.BRANCH_NAME}" == "master") {
-                                image.push("LATEST")
+                                dockerImage.push("LATEST")
                             }
                         }
                         currentBuild.result = "SUCCESS"
