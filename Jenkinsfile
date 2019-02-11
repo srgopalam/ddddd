@@ -77,6 +77,35 @@ pipeline {
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
         }
+        stage('test image') {
+            steps {
+                script {
+                    // https://hub.docker.com/r/tutum/hello-world/
+                    def container = image.run('-p 80')
+                    def contport = container.port(80)
+                    println image.id + " container is running at host port, " + contport
+                    def resp = sh(returnStdout: true,
+                                        script: """
+                                                set +x
+                                                curl -w "%{http_code}" -o /dev/null -s \
+                                                http://\"${contport}\"
+                                                """
+                                        ).trim()
+                    if ( resp == "200" ) {
+                        println "periodservice is alive and kicking!"
+                        docker.withRegistry("${env.REGISTRY}", 'docker-hub-entree') {
+                            image.push("${GIT_HASH}")
+                            if ( "${env.BRANCH_NAME}" == "master" ) {
+                                image.push("LATEST")
+                            }
+                        }
+                        currentBuild.result = "SUCCESS"
+                    } else {
+                        println "periodservice deployment failed!"
+                        currentBuild.result = "FAILURE"
+                    }
+                }
+}
     }
 }
 
