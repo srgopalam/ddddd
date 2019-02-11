@@ -75,8 +75,8 @@ pipeline {
         stage('test image') {
             steps {
                 script {
-                    def container = dockerImage.run('-p 8081')
-                    def contport = container.port(8080)
+                    def container = dockerImage.run('-p 8090')
+                    def contport = container.port(8090)
                     println dockerImage.id + " container is running at host port, " + contport
                     def resp = sh(returnStdout: true,
                             script: """
@@ -85,7 +85,7 @@ pipeline {
                                                 http://\"${contport}\"
                                                 """
                     ).trim()
-                    println resp
+                    println "resp:" + resp
                     if (resp == "200") {
                         println "periodservice is alive and kicking!"
                         docker.withRegistry("${env.REGISTRY}", 'docker-hub-entree') {
