@@ -1,7 +1,6 @@
 pipeline {
     environment {
-        IMAGE = "srgopalam/periodservice"
-        REGISTRY = "https://registry.hub.docker.com"
+        registry = "srgopalam/periodservice"
         registryCredential = 'dockerhub'
     }
 
@@ -81,7 +80,6 @@ pipeline {
         stage('test image') {
             steps {
                 script {
-                    // https://hub.docker.com/r/tutum/hello-world/
                     def container = image.run('-p 8081')
                     def contport = container.port(8081)
                     println image.id + " container is running at host port, " + contport
