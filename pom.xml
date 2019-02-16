@@ -47,10 +47,7 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		<plugin>
-		    <groupId>pl.project13.maven</groupId>
-		    <artifactId>git-commit-id-plugin</artifactId>
-		</plugin>
+		
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
@@ -71,7 +68,10 @@
             </goals>
         </execution>
     </executions>
-			</plugin>
+			</plugin><plugin>
+		    <groupId>pl.project13.maven</groupId>
+		    <artifactId>git-commit-id-plugin</artifactId>
+		</plugin>
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-surefire-plugin</artifactId>
