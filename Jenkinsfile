@@ -80,7 +80,7 @@ pipeline {
         stage('test image') {
             steps {
                 script {
-                    sh "docker run -d -p 8090:8080 srgopalam/periodservice:$BUILD_NUMBER"
+                    sh "docker run -d -p 8090:8443 srgopalam/periodservice:$BUILD_NUMBER"
                 }
             }
         }
