@@ -16,8 +16,9 @@ pipeline {
 
             steps {
                 script {
-                    def mavenHome = tool name: 'maven360', type: 'maven'
-                    sh "${mavenHome}/bin/mvn test"
+                    //def mavenHome = tool name: 'maven360', type: 'maven'
+                    //sh "${mavenHome}/bin/mvn test"
+                    sh "mvn test"
                 }
             }
         }
