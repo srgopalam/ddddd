@@ -16,8 +16,6 @@ pipeline {
 
             steps {
                 script {
-                    //def mavenHome = tool name: 'maven360', type: 'maven'
-                    //sh "${mavenHome}/bin/mvn test"
                     sh "mvn test"
                 }
             }
@@ -31,18 +29,13 @@ pipeline {
                 withSonarQubeEnv('sonarqube') {
                     sh "${scannerHome}/bin/sonar-scanner"
                 }
-
-                //timeout(time: 10, unit: 'MINUTES') {
-                //     waitForQualityGate abortPipeline: true
-                //}
             }
         }
         stage('Packaging the app') {
 
             steps {
                 script {
-                    def mavenHome = tool name: 'maven360', type: 'maven'
-                    sh "${mavenHome}/bin/mvn package"
+                    sh "mvn package"
                 }
             }
 
