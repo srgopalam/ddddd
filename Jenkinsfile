@@ -50,6 +50,7 @@ pipeline {
                         exclusionPattern: 'src/test*')
             }
         }
+        /* 
         stage('Building image') {
             steps {
                 script {
@@ -78,7 +79,7 @@ pipeline {
                 }
             }
         }
-/*        stage('Remove Unused docker image') {
+       stage('Remove Unused docker image') {
             steps {
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
