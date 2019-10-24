@@ -50,49 +50,7 @@ pipeline {
                         exclusionPattern: 'src/test*')
             }
         }
-        /* 
-        stage('Building image') {
-            steps {
-                script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
-                }
-            }
-        }
-        stage('Deploy image') {
-            steps {
-                script {
-                    docker.withRegistry('', registryCredential) {
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
-        stage('Remove Unused docker image') {
-            steps {
-                sh "docker rmi $registry:$BUILD_NUMBER"
-            }
-        }
-        stage('test image') {
-            steps {
-                script {
-                    sh "docker run -d -p 8090:8443 srgopalam/periodservice:$BUILD_NUMBER"
-                }
-            }
-        }
-       stage('Remove Unused docker image') {
-            steps {
-                sh "docker rmi $registry:$BUILD_NUMBER"
-            }
-        }*/
-    }
+       }
 }
 
-// No need to occupy a node
-stage("Quality Gate") {
-    timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
-        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-        if (qg.status != 'OK') {
-            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-        }
-    }
-}
+
